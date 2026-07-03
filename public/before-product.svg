@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="840" viewBox="0 0 1280 840" role="img" aria-label="Before product sample">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#efe6dd" />
+      <stop offset="100%" stop-color="#d6c9bc" />
+    </linearGradient>
+    <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+    <filter id="grain" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="9" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 0.08" />
+      </feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="840" fill="url(#bg)" />
+  <rect x="190" y="150" width="900" height="540" rx="48" fill="#d7cabd" />
+
+  <g filter="url(#blur)">
+    <rect x="560" y="230" width="160" height="320" rx="26" fill="#bfae9f" />
+    <rect x="585" y="190" width="110" height="60" rx="12" fill="#b4a596" />
+    <rect x="575" y="380" width="130" height="50" rx="10" fill="#b2a395" />
+  </g>
+
+  <rect width="1280" height="840" filter="url(#grain)" />
+</svg>

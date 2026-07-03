@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+    input, button { padding: 10px; margin: 5px 0; display: block; width: 100%; }
+    button { background: #007bff; color: white; cursor: pointer; border: none; border-radius: 4px; }
+    button:hover { background: #0056b3; }
+    .log { background: #f0f0f0; padding: 10px; margin-top: 10px; border-radius: 4px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Upload Test</h1>
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="uploadImage()">Upload & Process</button>
+    <div class="log" id="log"></div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'http://127.0.0.1:8000';
+    
+    function log(msg, isError = false) {
+      const logDiv = document.getElementById('log');
+      const className = isError ? 'error' : 'success';
+      logDiv.innerHTML += `<div class="${className}">${new Date().toLocaleTimeString()}: ${msg}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+      console.log(msg);
+    }
+
+    async function uploadImage() {
+      try {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+          log('No file selected', true);
+          return;
+        }
+
+        log(`Selected file: ${file.name} (${(file.size/1024).toFixed(2)} KB)`);
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('mode', 'general');
+        formData.append('enhance', 'true');
+
+        log(`Uploading to ${API_BASE_URL}/api/jobs...`);
+        
+        const response = await fetch(`${API_BASE_URL}/api/jobs`, {
+          method: 'POST',
+          body: formData
+        });
+
+        log(`Response status: ${response.status}`);
+
+        if (!response.ok) {
+          const err = await response.json();
+          log(`Error: ${JSON.stringify(err)}`, true);
+          return;
+        }
+
+        const data = await response.json();
+        log(`✓ Job created: ${data.job_id}`);
+
+        // Poll for status
+        const jobId = data.job_id;
+        log(`Polling job status...`);
+
+        let polling = true;
+        while (polling) {
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          const statusRes = await fetch(`${API_BASE_URL}/api/jobs/${jobId}`);
+          const statusData = await statusRes.json();
+          
+          log(`Status: ${statusData.status}, Progress: ${statusData.progress}%`);
+
+          if (statusData.status === 'done') {
+            log(`✓ Job completed!`);
+            log(`Download URL: /api/download/${jobId}/enhanced`);
+            polling = false;
+          } else if (statusData.status === 'failed') {
+            log(`✗ Job failed: ${statusData.error}`, true);
+            polling = false;
+          }
+        }
+
+      } catch (err) {
+        log(`Exception: ${err.message}`, true);
+      }
+    }
+
+    log('Upload test page loaded. Select an image and click Upload.');
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+Models used in this project
+
+1. RealESRGAN_x2plus
+   - Task: 2x image enhancement and upscaling
+   - Details: Real-ESRGAN general-image checkpoint; RRDBNet generator with 23 RRDB blocks, 64 feature channels, and 32 growth channels
+   - Training data: DF2K (DIV2K + Flickr2K) + OST
+   - Note: The official Real-ESRGAN docs publish DF2K + OST for the general-image training pipeline; x2plus is the x2 checkpoint in that same family
+
+2. RealESRGAN_x4plus
+   - Task: 4x image enhancement and upscaling
+   - Details: Real-ESRGAN general-image checkpoint; RRDBNet generator with 23 RRDB blocks, 64 feature channels, and 32 growth channels
+   - Training data: DF2K (DIV2K + Flickr2K) + OST
+
+3. GFPGANv1.4
+   - Task: blind face restoration
+   - Details: GFPGAN clean checkpoint; uses a generative facial prior with a StyleGAN2-based face prior
+   - Training data: FFHQ is the documented GFPGAN training dataset; the upstream repo does not publish a separate dataset card just for v1.4
+   - Note: The official repo describes v1.4 as giving slightly more detail and better identity than v1.3
+
+4. Restormer (motion_deblur)
+   - Task: motion deblurring
+   - Details: Restormer transformer-based image restoration checkpoint
+   - Training data: GoPro training set
+   - Evaluation datasets mentioned upstream: GoPro, HIDE, RealBlur-J, RealBlur-R
+
+5. Restormer (real_denoise)
+   - Task: real image denoising
+   - Details: Restormer real-denoising checkpoint
+   - Training data: SIDD
+   - Evaluation datasets mentioned upstream: SIDD, DND
+
+6. MPRNet (deblur)
+   - Task: image deblurring
+   - Details: MPRNet (Multi-Stage Progressive Image Restoration) checkpoint
+   - Training data: GoPro
+   - Evaluation datasets mentioned upstream: GoPro, HIDE, RealBlur-J, RealBlur-R
+
+7. MPRNet (denoise)
+   - Task: image denoising
+   - Details: MPRNet (Multi-Stage Progressive Image Restoration) checkpoint
+   - Training data: SIDD
+   - Evaluation datasets mentioned upstream: SIDD, DND
+
+8. LaMa (big-lama)
+   - Task: large-mask image inpainting
+   - Details: LaMa checkpoint for resolution-robust inpainting with Fourier convolutions; this project uses the big-lama variant
+   - Training data: the official LaMa README labels big-lama as the Places2 / Places Challenge model and says Big-Lama is trained with the Places365-Challenge high-resolution training data
+
+9. DeOldify (ColorizeStable_gen)
+   - Task: image colorization for grayscale / old photos
+   - Details: DeOldify stable image model; U-Net with a ResNet101 backbone and NoGAN training
+   - Training data: 7% of ImageNet, trained at 192 px according to the official README
+
+10. U2NET
+   - Task: salient-object segmentation and background removal
+   - Details: U^2-Net model with a nested U-structure for salient object detection
+   - Training data: DUTS-TR for the general u2net saliency model
+   - Note: The upstream project also has separate portrait and human-segmentation variants trained on other datasets, but this project requests the general u2net model through rembg
